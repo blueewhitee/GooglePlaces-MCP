@@ -1,10 +1,6 @@
-# TalkForce.ai MCP Server 🚀
 
-An AI-powered **Model Context Protocol (MCP) server** that provides location services as tools for AI assistants. Built on Google Places API, it enables AI agents to search for places, find nearby locations, and get detailed place information.
+ **Model Context Protocol (MCP) server** that provides location services as tools for AI assistants. Built on Google Places API, it enables AI agents to search for places, find nearby locations, and get detailed place information.
 
-## 🎯 What is MCP?
-
-**Model Context Protocol (MCP)** allows AI assistants to use external tools and services. Instead of being limited to their training data, AI can now call your server's functions directly to get real-time information.
 
 ## 🛠️ Available Tools
 
@@ -62,7 +58,7 @@ Get a list of all supported place types.
 
 **Parameters:** None
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
 - Node.js 18+ 
@@ -223,5 +219,3 @@ For issues or questions about the MCP server:
 5. **Ask your AI** to find places for you!
 
 ---
-
-**🚀 TalkForce.ai** - Empowering AI with real-world location intelligence 
