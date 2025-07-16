@@ -247,4 +247,27 @@ class PlacesService {
   }
 }
 
-export const placesService = new PlacesService(); 
+// Lazy initialization - only create when first accessed
+let _placesService: PlacesService | null = null;
+
+export const placesService = {
+  get instance(): PlacesService {
+    if (!_placesService) {
+      _placesService = new PlacesService();
+    }
+    return _placesService;
+  },
+  
+  // Proxy all methods to the lazy instance
+  async searchPlaces(params: SearchParams) {
+    return this.instance.searchPlaces(params);
+  },
+  
+  async getPlaceDetails(placeId: string) {
+    return this.instance.getPlaceDetails(placeId);
+  },
+  
+  async findNearbyPlaces(location: { lat: number; lng: number }, type: string, radius: number = 5000) {
+    return this.instance.findNearbyPlaces(location, type, radius);
+  }
+}; 

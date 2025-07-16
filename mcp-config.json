@@ -1,0 +1,58 @@
+{
+  "name": "talkforce-places",
+  "description": "AI-powered location services providing place search, nearby discovery, and detailed place information using Google Places API",
+  "version": "1.0.0",
+  "author": "TalkForce.ai",
+  "license": "ISC",
+  "homepage": "https://github.com/talkforce/talkforce-places",
+  "capabilities": {
+    "tools": {
+      "search_places": {
+        "description": "Search for places using natural language queries",
+        "parameters": ["query", "location?", "radius?", "type?"]
+      },
+      "find_nearby_places": {
+        "description": "Find places of a specific type near a location",
+        "parameters": ["location", "type", "radius?"]
+      },
+      "get_place_details": {
+        "description": "Get comprehensive details about a specific place",
+        "parameters": ["placeId"]
+      },
+      "get_place_types": {
+        "description": "Get list of all supported place types",
+        "parameters": []
+      }
+    }
+  },
+  "requirements": {
+    "environment": {
+      "GOOGLE_PLACES_API_KEY": "Required - Google Places API key"
+    },
+    "node": ">=18.0.0"
+  },
+  "installation": {
+    "npm": "npm install talkforce.ai",
+    "yarn": "yarn add talkforce.ai",
+    "global": "npm install -g talkforce.ai"
+  },
+  "usage": {
+    "command": "talkforce-mcp",
+    "transport": "stdio"
+  },
+  "examples": {
+    "search_places": {
+      "query": "best pizza restaurants in New York",
+      "location": {"lat": 40.7128, "lng": -73.0060},
+      "radius": 5000
+    },
+    "find_nearby_places": {
+      "location": {"lat": 40.7128, "lng": -73.0060},
+      "type": "restaurant",
+      "radius": 2000
+    },
+    "get_place_details": {
+      "placeId": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+    }
+  }
+} 
