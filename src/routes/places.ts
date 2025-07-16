@@ -26,55 +26,6 @@ router.post('/search', validateSearchParams, async (req, res, next) => {
 });
 
 /**
- * GET /api/places/:placeId
- * Get detailed information about a specific place
- */
-router.get('/:placeId', async (req, res, next) => {
-  try {
-    const { placeId } = req.params;
-    
-    if (!placeId) {
-      return res.status(400).json({
-        success: false,
-        error: 'Place ID is required'
-      });
-    }
-
-    const placeDetails = await placesService.getPlaceDetails(placeId);
-    
-    return res.json({
-      success: true,
-      data: placeDetails,
-      message: `Details for ${placeDetails.name}`
-    });
-  } catch (error) {
-    return next(error);
-  }
-});
-
-/**
- * POST /api/places/nearby
- * Find nearby places of a specific type
- * Body: { location: {lat: number, lng: number}, type: string, radius?: number }
- */
-router.post('/nearby', validateLocationParams, async (req, res, next) => {
-  try {
-    const { location, type, radius = 5000 } = req.body;
-    
-    const results = await placesService.findNearbyPlaces(location, type, radius);
-    
-    return res.json({
-      success: true,
-      data: results,
-      count: results.length,
-      message: `Found ${results.length} ${type} places nearby`
-    });
-  } catch (error) {
-    return next(error);
-  }
-});
-
-/**
  * GET /api/places/types
  * Get available place types for AI agents
  */
@@ -116,6 +67,55 @@ router.get('/types', (req, res) => {
     data: commonTypes,
     message: 'Available place types for search'
   });
+});
+
+/**
+ * POST /api/places/nearby
+ * Find nearby places of a specific type
+ * Body: { location: {lat: number, lng: number}, type: string, radius?: number }
+ */
+router.post('/nearby', validateLocationParams, async (req, res, next) => {
+  try {
+    const { location, type, radius = 5000 } = req.body;
+    
+    const results = await placesService.findNearbyPlaces(location, type, radius);
+    
+    return res.json({
+      success: true,
+      data: results,
+      count: results.length,
+      message: `Found ${results.length} ${type} places nearby`
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+/**
+ * GET /api/places/:placeId
+ * Get detailed information about a specific place
+ */
+router.get('/:placeId', async (req, res, next) => {
+  try {
+    const { placeId } = req.params;
+    
+    if (!placeId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Place ID is required'
+      });
+    }
+
+    const placeDetails = await placesService.getPlaceDetails(placeId);
+    
+    return res.json({
+      success: true,
+      data: placeDetails,
+      message: `Details for ${placeDetails.name}`
+    });
+  } catch (error) {
+    return next(error);
+  }
 });
 
 export { router as placesRouter }; 
