@@ -28,13 +28,13 @@ app.get('/health', (req, res) => {
 // API routes
 app.use('/api/places', placesRouter);
 
-// Serve frontend for all other routes
+// Error handling middleware
+app.use(errorHandler);
+
+// Serve frontend for all other routes (this should be the very last route)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
-
-// Error handling middleware
-app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
