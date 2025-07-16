@@ -61,16 +61,6 @@ class PlacesService {
       const request: any = {
         textQuery: query,
         maxResultCount: 10,
-        fieldMask: [
-          'places.id',
-          'places.displayName',
-          'places.formattedAddress',
-          'places.location',
-          'places.rating',
-          'places.priceLevel',
-          'places.types',
-          'places.currentOpeningHours.openNow'
-        ].join(','),
       };
 
       // Add location bias if provided
@@ -91,11 +81,32 @@ class PlacesService {
         request.includedType = type;
       }
 
-      const response = await this.placesClient.searchText(request);
+      const fieldMask = [
+        'places.id',
+        'places.displayName',
+        'places.formattedAddress',
+        'places.location',
+        'places.rating',
+        'places.priceLevel',
+        'places.types',
+        'places.currentOpeningHours.openNow'
+      ].join(',');
+
+      const response = await this.placesClient.searchText(request, {
+        otherArgs: {
+          headers: {
+            'X-Goog-FieldMask': fieldMask,
+          },
+        },
+      });
       
       return this.formatSearchResults(response[0].places || []);
     } catch (error) {
-      console.error('Error searching places:', error);
+      console.error('Error searching places:', {
+        query: params.query,
+        location: params.location,
+        error: error instanceof Error ? error.message : error
+      });
       throw new Error('Failed to search places');
     }
   }
@@ -107,28 +118,38 @@ class PlacesService {
     try {
       const request = {
         name: `places/${placeId}`,
-        fieldMask: [
-          'id',
-          'displayName',
-          'formattedAddress',
-          'location',
-          'rating',
-          'priceLevel',
-          'types',
-          'currentOpeningHours',
-          'nationalPhoneNumber',
-          'websiteUri',
-          'reviews',
-          'photos'
-        ].join(','),
       };
 
-      const response = await this.placesClient.getPlace(request);
+      const fieldMask = [
+        'id',
+        'displayName',
+        'formattedAddress',
+        'location',
+        'rating',
+        'priceLevel',
+        'types',
+        'currentOpeningHours',
+        'nationalPhoneNumber',
+        'websiteUri',
+        'reviews',
+        'photos'
+      ].join(',');
+
+      const response = await this.placesClient.getPlace(request, {
+        otherArgs: {
+          headers: {
+            'X-Goog-FieldMask': fieldMask,
+          },
+        },
+      });
       const place = response[0];
 
       return this.formatPlaceDetails(place);
     } catch (error) {
-      console.error('Error getting place details:', error);
+      console.error('Error getting place details:', {
+        placeId,
+        error: error instanceof Error ? error.message : error
+      });
       throw new Error('Failed to get place details');
     }
   }
@@ -145,16 +166,6 @@ class PlacesService {
       const request = {
         includedTypes: [type],
         maxResultCount: 10,
-        fieldMask: [
-          'places.id',
-          'places.displayName',
-          'places.formattedAddress',
-          'places.location',
-          'places.rating',
-          'places.priceLevel',
-          'places.types',
-          'places.currentOpeningHours.openNow'
-        ].join(','),
         locationRestriction: {
           circle: {
             center: {
@@ -166,11 +177,33 @@ class PlacesService {
         },
       };
 
-      const response = await this.placesClient.searchNearby(request);
+      const fieldMask = [
+        'places.id',
+        'places.displayName',
+        'places.formattedAddress',
+        'places.location',
+        'places.rating',
+        'places.priceLevel',
+        'places.types',
+        'places.currentOpeningHours.openNow'
+      ].join(',');
+
+      const response = await this.placesClient.searchNearby(request, {
+        otherArgs: {
+          headers: {
+            'X-Goog-FieldMask': fieldMask,
+          },
+        },
+      });
       
       return this.formatSearchResults(response[0].places || []);
     } catch (error) {
-      console.error('Error finding nearby places:', error);
+      console.error('Error finding nearby places:', {
+        location,
+        type,
+        radius,
+        error: error instanceof Error ? error.message : error
+      });
       throw new Error('Failed to find nearby places');
     }
   }
@@ -205,9 +238,11 @@ class PlacesService {
         author: review.authorAttribution?.displayName || 'Anonymous',
         time: review.publishTime,
       })) || [],
-      photos: place.photos?.slice(0, 5).map((photo: any) => 
-        `https://places.googleapis.com/v1/${photo.name}/media?maxHeightPx=400&maxWidthPx=400&key=${process.env.GOOGLE_PLACES_API_KEY}`
-      ) || [],
+      photos: place.photos?.slice(0, 5).map((photo: any) => {
+        // Use the photo reference properly according to Places API v1
+        const photoName = photo.name || photo.photoReference;
+        return `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=400&maxWidthPx=400&key=${process.env.GOOGLE_PLACES_API_KEY}`;
+      }) || [],
     };
   }
 }
