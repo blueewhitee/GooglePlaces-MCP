@@ -61,6 +61,16 @@ class PlacesService {
       const request: any = {
         textQuery: query,
         maxResultCount: 10,
+        fieldMask: [
+          'places.id',
+          'places.displayName',
+          'places.formattedAddress',
+          'places.location',
+          'places.rating',
+          'places.priceLevel',
+          'places.types',
+          'places.currentOpeningHours.openNow'
+        ].join(','),
       };
 
       // Add location bias if provided
@@ -135,6 +145,16 @@ class PlacesService {
       const request = {
         includedTypes: [type],
         maxResultCount: 10,
+        fieldMask: [
+          'places.id',
+          'places.displayName',
+          'places.formattedAddress',
+          'places.location',
+          'places.rating',
+          'places.priceLevel',
+          'places.types',
+          'places.currentOpeningHours.openNow'
+        ].join(','),
         locationRestriction: {
           circle: {
             center: {
